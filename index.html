@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Bay Star Chronicles - Global Cinema & Icons Social Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        },
+                        ebay: {
+                            blue: '#0064D2',
+                            red: '#E53238',
+                            yellow: '#F5AF02',
+                            green: '#86B817'
+                        },
+                        darkbg: '#0B0F17',
+                        glass: 'rgba(18, 24, 38, 0.75)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070A10;
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(22, 32, 53, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(245, 158, 11, 0.4);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px 2px rgba(245, 158, 11, 0.15);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF 20%, #FBBF24 70%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ebay-logo-text span:nth-child(1) { color: #E53238; }
+        .ebay-logo-text span:nth-child(2) { color: #0064D2; }
+        .ebay-logo-text span:nth-child(3) { color: #F5AF02; }
+        .ebay-logo-text span:nth-child(4) { color: #86B817; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #F59E0B;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand / Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToTop()">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 p-0.5 shadow-lg shadow-amber-500/20">
+                        <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid font-bold text-amber-400 text-xl">★</i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black tracking-tight ebay-logo-text">
+                            <span>e</span><span>b</span><span>a</span><span>y</span>
+                            <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold ml-1.5 px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700">Star Chronicles</span>
+                        </div>
+                        <p class="text-[11px] text-amber-400/90 tracking-wide font-medium">1,000 Global Icons & Film Stars Social Directory</p>
+                    </div>
+                </div>
+
+                <!-- Global Stats Banner -->
+                <div class="hidden lg:flex items-center space-x-6 text-xs bg-slate-900/80 px-4 py-2 rounded-full border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-slate-400">Archived Stars:</span>
+                        <span class="font-bold text-amber-400" id="totalStarCount">1,000</span>
+                    </div>
+                    <div class="h-3 w-px bg-slate-800"></div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-heart text-rose-500"></i>
+                        <span class="text-slate-400">Total Fan Engagement:</span>
+                        <span class="font-bold text-slate-200" id="totalLikesCount">8.4M</span>
+                    </div>
+                </div>
+
+                <!-- User Profile & Action -->
+                <div class="flex items-center space-x-3">
+                    <button id="userProfileBtn" onclick="openUserProfileModal()" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-800/90 hover:bg-slate-700 border border-slate-700 transition">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="User Avatar" class="w-7 h-7 rounded-full object-cover ring-2 ring-amber-400/50">
+                        <span class="text-xs font-semibold text-slate-200 hidden sm:inline" id="currentUserName">Alex Vance</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero & Controls Header -->
+        <section class="mb-8">
+            <div class="relative rounded-3xl p-6 sm:p-10 overflow-hidden glass-panel border border-amber-500/20 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/40">
+                <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                        <i class="fa-solid fa-fire text-amber-400"></i>
+                        <span>Social Chronicle Directory</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+                        Explore <span class="gold-gradient-text">1,000 World Cinema</span> & Platform Stars
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed">
+                        Immerse yourself in the live social directory of legendary screen icons, modern drama figures, and international platform stars. Engage furiously with comments, dynamic likes, fan statistics, and real-time social profiles.
+                    </p>
+
+                    <!-- Search Bar & Filters -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search by star name, filmography, country, or genre..." class="w-full bg-slate-900/90 border border-slate-700/80 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition shadow-inner">
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="sortSelect" onchange="handleSort()" class="bg-slate-900/90 border border-slate-700/80 rounded-2xl px-4 py-3.5 text-sm text-slate-200 focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                <option value="rating">Top Rated ★</option>
+                                <option value="followers">Most Followed</option>
+                                <option value="likes">Most Liked</option>
+                                <option value="name">Alphabetical (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Tabs -->
+        <section class="mb-8">
+            <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none" id="categoryTabs">
+                <button onclick="filterCategory('All')" class="cat-tab px-5 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20" data-cat="All">
+                    All Stars (1000)
+                </button>
+                <button onclick="filterCategory('Cinema Icons')" class="cat-tab px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition whitespace-nowrap" data-cat="Cinema Icons">
+                    <i class="fa-solid fa-film mr-1.5 text-amber-400"></i> Cinema Icons
+                </button>
+                <button onclick="filterCategory('Global Cinema')" class="cat-tab px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition whitespace-nowrap" data-cat="Global Cinema">
+                    <i class="fa-solid fa-globe mr-1.5 text-amber-400"></i> Global Cinema
+                </button>
+                <button onclick="filterCategory('Drama & Theatre')" class="cat-tab px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition whitespace-nowrap" data-cat="Drama & Theatre">
+                    <i class="fa-solid fa-masks-theater mr-1.5 text-amber-400"></i> Drama & Theatre
+                </button>
+                <button onclick="filterCategory('Digital Stars')" class="cat-tab px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition whitespace-nowrap" data-cat="Digital Stars">
+                    <i class="fa-solid fa-tv mr-1.5 text-amber-400"></i> Digital & Streaming Stars
+                </button>
+            </div>
+        </section>
+
+        <!-- Dynamic Star Cards Grid -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">
+                    Showing <span id="displayedCount" class="text-amber-400">0</span> Featured Chronicles
+                </h2>
+                <div class="text-xs text-slate-500">
+                    Click any profile card for complete biography & live commentary
+                </div>
+            </div>
+
+            <div id="starsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Dynamic Card Elements Injected via JS -->
+            </div>
+
+            <!-- Loading Spinner / Load More Trigger -->
+            <div id="loadMoreContainer" class="mt-12 text-center pb-8">
+                <button id="loadMoreBtn" onclick="loadMoreStars()" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-sm hover:from-amber-400 hover:to-amber-500 transition shadow-lg shadow-amber-500/20 inline-flex items-center space-x-2">
+                    <span>Load More Chronicle Cards</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Star Profile Detail Modal -->
+    <div id="starModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300">
+        <div class="relative w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden my-8 glass-panel" onclick="event.stopPropagation()">
+            
+            <!-- Modal Close Button -->
+            <button onclick="closeStarModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-slate-950/80 hover:bg-rose-600 text-slate-300 hover:text-white flex items-center justify-center transition border border-slate-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Content Header / Banner -->
+            <div class="relative h-64 sm:h-80 w-full overflow-hidden">
+                <img id="modalCover" src="" alt="Star Backdrop" class="w-full h-full object-cover filter brightness-75">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                
+                <!-- Quick Badge Header -->
+                <div class="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+                    <div class="flex items-end space-x-4">
+                        <img id="modalAvatar" src="" alt="Avatar" class="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl object-cover ring-4 ring-amber-400 shadow-2xl">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span id="modalFieldBadge" class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">Field</span>
+                                <span id="modalCountryBadge" class="text-xs text-slate-300 bg-slate-800/90 px-2.5 py-1 rounded-full border border-slate-700"><i class="fa-solid fa-location-dot mr-1 text-amber-400"></i> <span id="modalCountry">Country</span></span>
+                            </div>
+                            <h2 id="modalName" class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Star Name</h2>
+                            <p id="modalWork" class="text-xs sm:text-sm text-amber-300/90 font-medium">Famous Work</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Body Tab Navigation & Content -->
+            <div class="p-6 sm:p-8">
+                <!-- Action Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-800">
+                    <div class="flex items-center space-x-6 text-sm">
+                        <div>
+                            <div class="text-xs text-slate-400">Rating</div>
+                            <div class="font-bold text-amber-400 flex items-center"><i class="fa-solid fa-star mr-1"></i> <span id="modalRating">4.9</span></div>
+                        </div>
+                        <div class="h-8 w-px bg-slate-800"></div>
+                        <div>
+                            <div class="text-xs text-slate-400">Followers</div>
+                            <div class="font-bold text-slate-200" id="modalFollowers">2.4M</div>
+                        </div>
+                        <div class="h-8 w-px bg-slate-800"></div>
+                        <div>
+                            <div class="text-xs text-slate-400">Likes</div>
+                            <div class="font-bold text-slate-200" id="modalLikes">540K</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <button id="modalLikeBtn" onclick="toggleModalLike()" class="px-5 py-2.5 rounded-xl border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 font-semibold text-xs transition flex items-center space-x-2">
+                            <i class="fa-solid fa-heart" id="modalLikeIcon"></i>
+                            <span id="modalLikeBtnText">Like Profile</span>
+                        </button>
+                        <button id="modalFollowBtn" onclick="toggleModalFollow()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20">
+                            + Follow Chronicle
+                        </button>
+                        <button onclick="shareProfile()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition border border-slate-700" title="Share Profile">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Sections Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Biography & Achievements -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Chronicle Biography</h3>
+                            <p id="modalBio" class="text-slate-300 text-sm leading-relaxed">
+                                Detailed biography narrative about career highlights and cinematic impact...
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-3">Key Masterpieces & Accolades</h3>
+                            <div id="modalFilmography" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Dynamic Film List -->
+                            </div>
+                        </div>
+
+                        <!-- Gallery Teasers -->
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-3">Public Press & Gallery Showcase</h3>
+                            <div id="modalGallery" class="grid grid-cols-3 gap-3">
+                                <!-- Gallery Images -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Social Comments & Activity Panel -->
+                    <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">
+                                    Live Fan Discussion (<span id="modalCommentCount">0</span>)
+                                </h3>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Active Feed</span>
+                            </div>
+
+                            <!-- Comment Input Form -->
+                            <form onsubmit="handlePostComment(event)" class="mb-4">
+                                <div class="relative">
+                                    <textarea id="commentInput" rows="2" placeholder="Write a comment about this icon..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 transition resize-none"></textarea>
+                                    <button type="submit" class="mt-2 w-full py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition">
+                                        Post Comment <i class="fa-solid fa-paper-plane ml-1"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Comment Thread List -->
+                            <div id="modalCommentThread" class="space-y-3 max-h-72 overflow-y-auto pr-1">
+                                <!-- Dynamic Comments -->
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-500 text-center">
+                            Verified eBay Star Chronicle Fan Hub • Be respectful in comments.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="userProfileModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full glass-panel" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white">Fan Member Profile</h3>
+                <button onclick="closeUserProfileModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="text-center mb-6">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" class="w-20 h-20 rounded-full mx-auto mb-3 object-cover ring-2 ring-amber-400">
+                <h4 class="text-base font-bold text-white">Alex Vance</h4>
+                <p class="text-xs text-slate-400">Verified Star Chronicle Collector & Film Historian</p>
+            </div>
+            <div class="space-y-3 text-xs bg-slate-950/50 p-4 rounded-xl border border-slate-800 mb-6">
+                <div class="flex justify-between text-slate-300"><span>Followed Stars:</span><span class="font-bold text-amber-400">142</span></div>
+                <div class="flex justify-between text-slate-300"><span>Comments Posted:</span><span class="font-bold text-amber-400">89</span></div>
+                <div class="flex justify-between text-slate-300"><span>Member Badge:</span><span class="font-bold text-emerald-400">Diamond Chronicle</span></div>
+            </div>
+            <button onclick="closeUserProfileModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
+                Close Window
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 hidden bg-slate-900 border border-amber-500/40 text-slate-100 text-xs px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-4 opacity-0">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-amber-400 text-base"></i>
+        <span id="toastMessage">Action completed successfully.</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/80 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="ebay-logo-text text-xl font-bold mb-2">
+                <span>e</span><span>b</span><span>a</span><span>y</span>
+                <span class="text-xs text-slate-400 font-normal">Star Chronicles &copy; 2026</span>
+            </div>
+            <p class="text-xs text-slate-500">
+                A live social media database of global film stars, performing artists, and digital icons. All imagery sourced for chronicle demonstration purposes.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Data Store & Global State
+        const TOTAL_STARS = 1000;
+        const INITIAL_LOAD_COUNT = 24;
+        let allStars = [];
+        let filteredStars = [];
+        let currentlyDisplayedCount = 0;
+        let selectedCategory = 'All';
+        let searchQuery = '';
+        let sortOption = 'rating';
+        let currentModalStarId = null;
+
+        // Sample datasets for 1,000 dynamic stars generation
+        const firstNames = [
+            "Audrey", "Sophia", "Suchitra", "Gong", "Penélope", "Cate", "Monica", "Scarlett", "Margot", "Gal",
+            "Deepika", "Priyanka", "Zendaya", "Emma", "Ana", "Marion", "Salma", "Charlize", "Keira", "Eva",
+            "Aishwarya", "Fan", "Lupita", "Viola", "Zhang", "Freida", "Natalie", "Halle", "Winona", "Tilda",
+            "Meryl", "Jennifer", "Rachel", "Gwyneth", "Julianne", "Jessica", "Anne", "Kristen", "Bipasha", "Tabu"
+        ];
+        const lastNames = [
+            "Hepburn", "Loren", "Sen", "Li", "Cruz", "Blanchett", "Bellucci", "Johansson", "Robbie", "Gadot",
+            "Padukone", "Chopra", "Coleman", "Stone", "de Armas", "Cotillard", "Hayek", "Theron", "Knightley", "Green",
+            "Rai", "Bingbing", "Nyong'o", "Davis", "Ziyi", "Pinto", "Portman", "Berry", "Ryder", "Swinton",
+            "Streep", "Lawrence", "Weisz", "Paltrow", "Moore", "Chastain", "Hathaway", "Stewart", "Basu", "Hashmi"
+        ];
+        const countries = ["United States", "France", "India", "Italy", "China", "United Kingdom", "Spain", "Australia", "Mexico", "South Korea", "Japan", "Brazil", "Canada"];
+        const fields = ["Cinema Icons", "Global Cinema", "Drama & Theatre", "Digital Stars"];
+        
+        const curatedMasterpieces = [
+            ["Roman Holiday", "Breakfast at Tiffany's", "My Fair Lady"],
+            ["Two Women", "Marriage Italian Style", "Yesterday, Today and Tomorrow"],
+            ["Deep Jwele Jaai", "Saptapadi", "Aandhi"],
+            ["Raise the Red Lantern", "Farewell My Concubine", "Memoirs of a Geisha"],
+            ["Vicky Cristina Barcelona", "Volver", "Nine"],
+            ["Blue Jasmine", "Elizabeth", "Carol"],
+            ["Malèna", "The Matrix Reloaded", "The Passion of the Christ"],
+            ["Lost in Translation", "Her", "The Avengers"],
+            ["The Wolf of Wall Street", "Barbie", "Babylon"],
+            ["Wonder Woman", "Fast & Furious", "Red Notice"],
+            ["Padmaavat", "Bajirao Mastani", "Piku"],
+            ["La La Land", "Easy A", "Cruella"],
+            ["Blade Runner 2049", "Knives Out", "No Time to Die"],
+            ["La Vie en Rose", "Inception", "Midnight in Paris"],
+            ["Frida", "Desperado", "Eternals"]
+        ];
+
+        const avatarPool = [
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&q=80&w=400"
+        ];
+
+        const defaultComments = [
+            { user: "CinematicMaster", text: "An absolute legend of modern screen arts! Stunning screen presence.", time: "2 hours ago" },
+            { user: "GlobalFilmFan", text: "Her performance in classics left me spellbound. Legendary star!", time: "5 hours ago" },
+            { user: "EBayCollector", text: "Saved this card into my top priority eBay Star Chronicles library!", time: "1 day ago" },
+            { user: "DramaReviewer", text: "Incredible emotional range and versatile filmography throughout the years.", time: "2 days ago" }
+        ];
+
+        // Systematic Generation Algorithm for 1000 Profiles
+        function generate1000Stars() {
+            const stars = [];
+            for (let i = 1; i <= TOTAL_STARS; i++) {
+                const fn = firstNames[i % firstNames.length];
+                const ln = lastNames[(i * 3) % lastNames.length];
+                const fullName = `${fn} ${ln} ${i > 40 ? `II` : ''}`.trim();
+                const field = fields[i % fields.length];
+                const country = countries[i % countries.length];
+                const avatar = avatarPool[i % avatarPool.length];
+                const works = curatedMasterpieces[i % curatedMasterpieces.length];
+                
+                const followers = ((i * 17) % 890 + 110) / 10; // Millions
+                const likes = Math.floor((i * 43) % 950 + 50); // Thousands
+                const rating = (4.5 + ((i % 50) / 100)).toFixed(1);
+
+                stars.push({
+                    id: i,
+                    name: fullName,
+                    field: field,
+                    country: country,
+                    avatar: avatar,
+                    backdrop: avatar,
+                    rating: parseFloat(rating),
+                    followers: `${followers.toFixed(1)}M`,
+                    likesCount: likes,
+                    isLiked: false,
+                    isFollowing: false,
+                    bio: `${fullName} is an internationally celebrated figure in ${field.toLowerCase()} originating from ${country}. Known for captivating performances, expressive cinematic nuance, and landmark roles in masterpieces such as "${works[0]}" and "${works[1]}". Recognized globally for contributions to screen arts and global stage culture.`,
+                    masterpieces: works,
+                    comments: [...defaultComments]
+                });
+            }
+            return stars;
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            allStars = generate1000Stars();
+            applyFiltersAndSort();
+        });
+
+        // Filter and Sort Engine
+        function applyFiltersAndSort() {
+            filteredStars = allStars.filter(star => {
+                const matchesCategory = selectedCategory === 'All' || star.field === selectedCategory;
+                const matchesSearch = searchQuery === '' || 
+                    star.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    star.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    star.field.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    star.masterpieces.some(w => w.toLowerCase().includes(searchQuery.toLowerCase()));
+                return matchesCategory && matchesSearch;
+            });
+
+            // Sort
+            filteredStars.sort((a, b) => {
+                if (sortOption === 'rating') return b.rating - a.rating;
+                if (sortOption === 'followers') return parseFloat(b.followers) - parseFloat(a.followers);
+                if (sortOption === 'likes') return b.likesCount - a.likesCount;
+                if (sortOption === 'name') return a.name.localeCompare(b.name);
+                return 0;
+            });
+
+            // Reset pagination state
+            currentlyDisplayedCount = 0;
+            document.getElementById('starsGrid').innerHTML = '';
+            loadMoreStars();
+        }
+
+        // Dynamic Card Rendering
+        function loadMoreStars() {
+            const grid = document.getElementById('starsGrid');
+            const nextBatch = filteredStars.slice(currentlyDisplayedCount, currentlyDisplayedCount + INITIAL_LOAD_COUNT);
+
+            nextBatch.forEach(star => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between cursor-pointer group";
+                card.onclick = () => openStarModal(star.id);
+
+                card.innerHTML = `
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${star.avatar}" alt="${star.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                        
+                        <!-- Top Badges -->
+                        <div class="absolute top-3 left-3 right-3 flex justify-between items-center">
+                            <span class="px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-amber-400 text-[10px] font-bold border border-slate-700/80 uppercase">
+                                ${star.field}
+                            </span>
+                            <span class="px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-slate-200 text-[10px] font-semibold border border-slate-700/80 flex items-center space-x-1">
+                                <i class="fa-solid fa-star text-amber-400 text-[9px]"></i>
+                                <span>${star.rating}</span>
+                            </span>
+                        </div>
+
+                        <!-- Bottom Name Over Card -->
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <h3 class="text-lg font-extrabold text-white group-hover:text-amber-400 transition leading-snug">${star.name}</h3>
+                            <p class="text-xs text-slate-400 flex items-center mt-0.5">
+                                <i class="fa-solid fa-location-dot text-amber-400 mr-1 text-[10px]"></i> ${star.country}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 flex-1 flex flex-col justify-between bg-slate-900/60">
+                        <div class="mb-3">
+                            <div class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Iconic Work</div>
+                            <div class="text-xs text-amber-300 font-medium truncate">${star.masterpieces[0]}</div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                            <div>
+                                <span class="font-bold text-slate-200">${star.followers}</span> fans
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="event.stopPropagation(); quickLikeCard(${star.id}, this)" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition">
+                                    <i class="${star.isLiked ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart"></i>
+                                    <span class="text-[11px] font-semibold">${star.likesCount}k</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            currentlyDisplayedCount += nextBatch.length;
+            document.getElementById('displayedCount').innerText = currentlyDisplayedCount;
+
+            // Load more button visibility
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            if (currentlyDisplayedCount >= filteredStars.length) {
+                loadMoreBtn.classList.add('hidden');
+            } else {
+                loadMoreBtn.classList.remove('hidden');
+            }
+        }
+
+        // Search & Filter Listeners
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value;
+            applyFiltersAndSort();
+        }
+
+        function handleSort() {
+            sortOption = document.getElementById('sortSelect').value;
+            applyFiltersAndSort();
+        }
+
+        function filterCategory(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('.cat-tab').forEach(tab => {
+                if (tab.dataset.cat === cat) {
+                    tab.className = "cat-tab px-5 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20";
+                } else {
+                    tab.className = "cat-tab px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition whitespace-nowrap";
+                }
+            });
+            applyFiltersAndSort();
+        }
+
+        // Quick Like from Grid
+        function quickLikeCard(id, btn) {
+            const star = allStars.find(s => s.id === id);
+            if (!star) return;
+            star.isLiked = !star.isLiked;
+            star.likesCount += star.isLiked ? 1 : -1;
+            
+            const icon = btn.querySelector('i');
+            const label = btn.querySelector('span');
+            
+            if (star.isLiked) {
+                icon.className = "fa-solid fa-heart text-rose-500 animate-bounce";
+                showToast(`Liked ${star.name}'s profile!`);
+            } else {
+                icon.className = "fa-regular fa-heart";
+            }
+            label.innerText = `${star.likesCount}k`;
+        }
+
+        // Modal Engine
+        function openStarModal(id) {
+            const star = allStars.find(s => s.id === id);
+            if (!star) return;
+            currentModalStarId = id;
+
+            document.getElementById('modalCover').src = star.backdrop;
+            document.getElementById('modalAvatar').src = star.avatar;
+            document.getElementById('modalName').innerText = star.name;
+            document.getElementById('modalFieldBadge').innerText = star.field;
+            document.getElementById('modalCountry').innerText = star.country;
+            document.getElementById('modalWork').innerText = `Masterpiece: "${star.masterpieces[0]}"`;
+            document.getElementById('modalRating').innerText = star.rating;
+            document.getElementById('modalFollowers').innerText = star.followers;
+            document.getElementById('modalLikes').innerText = `${star.likesCount}K`;
+            document.getElementById('modalBio').innerText = star.bio;
+
+            // Filmography
+            const filmContainer = document.getElementById('modalFilmography');
+            filmContainer.innerHTML = star.masterpieces.map((work, idx) => `
+                <div class="flex items-center space-x-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 font-bold flex items-center justify-center text-xs">
+                        #${idx + 1}
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-100">${work}</div>
+                        <div class="text-[10px] text-slate-400">Award Nominated Feature</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Gallery
+            const galleryContainer = document.getElementById('modalGallery');
+            galleryContainer.innerHTML = [0, 1, 2].map(() => `
+                <div class="h-20 rounded-xl overflow-hidden border border-slate-800">
+                    <img src="${star.avatar}" class="w-full h-full object-cover hover:scale-110 transition duration-300">
+                </div>
+            `).join('');
+
+            // Like & Follow State
+            updateModalActionButtons(star);
+
+            // Render Comments
+            renderModalComments(star);
+
+            // Show Modal
+            const modal = document.getElementById('starModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeStarModal() {
+            const modal = document.getElementById('starModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            currentModalStarId = null;
+        }
+
+        function updateModalActionButtons(star) {
+            const likeBtn = document.getElementById('modalLikeBtn');
+            const likeIcon = document.getElementById('modalLikeIcon');
+            const likeText = document.getElementById('modalLikeBtnText');
+
+            if (star.isLiked) {
+                likeBtn.className = "px-5 py-2.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/50 font-semibold text-xs transition flex items-center space-x-2";
+                likeIcon.className = "fa-solid fa-heart text-rose-500";
+                likeText.innerText = "Liked Profile";
+            } else {
+                likeBtn.className = "px-5 py-2.5 rounded-xl border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 font-semibold text-xs transition flex items-center space-x-2";
+                likeIcon.className = "fa-regular fa-heart";
+                likeText.innerText = "Like Profile";
+            }
+
+            const followBtn = document.getElementById('modalFollowBtn');
+            if (star.isFollowing) {
+                followBtn.className = "px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold text-xs transition";
+                followBtn.innerText = "Following Chronicle";
+            } else {
+                followBtn.className = "px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20";
+                followBtn.innerText = "+ Follow Chronicle";
+            }
+        }
+
+        function toggleModalLike() {
+            if (!currentModalStarId) return;
+            const star = allStars.find(s => s.id === currentModalStarId);
+            if (!star) return;
+
+            star.isLiked = !star.isLiked;
+            star.likesCount += star.isLiked ? 1 : -1;
+            document.getElementById('modalLikes').innerText = `${star.likesCount}K`;
+            updateModalActionButtons(star);
+            showToast(star.isLiked ? `Added ${star.name} to your favorites!` : `Removed from favorites`);
+            applyFiltersAndSort();
+        }
+
+        function toggleModalFollow() {
+            if (!currentModalStarId) return;
+            const star = allStars.find(s => s.id === currentModalStarId);
+            if (!star) return;
+
+            star.isFollowing = !star.isFollowing;
+            updateModalActionButtons(star);
+            showToast(star.isFollowing ? `Now following ${star.name}!` : `Unfollowed ${star.name}`);
+        }
+
+        function renderModalComments(star) {
+            const container = document.getElementById('modalCommentThread');
+            document.getElementById('modalCommentCount').innerText = star.comments.length;
+
+            container.innerHTML = star.comments.map(c => `
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800/80">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs font-bold text-amber-400">${c.user}</span>
+                        <span class="text-[10px] text-slate-500">${c.time}</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-normal">${c.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function handlePostComment(e) {
+            e.preventDefault();
+            if (!currentModalStarId) return;
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const star = allStars.find(s => s.id === currentModalStarId);
+            if (!star) return;
+
+            star.comments.unshift({
+                user: "Alex Vance (You)",
+                text: text,
+                time: "Just now"
+            });
+
+            input.value = '';
+            renderModalComments(star);
+            showToast("Comment published live!");
+        }
+
+        // Sharing Functionality
+        function shareProfile() {
+            if (!currentModalStarId) return;
+            const star = allStars.find(s => s.id === currentModalStarId);
+            const dummyUrl = `https://ebay.com/star-chronicles/profile/${star.id}`;
+            
+            // Clipboard Copy Guardrail
+            const tempInput = document.createElement('input');
+            tempInput.value = dummyUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Profile chronicle link copied to clipboard!");
+        }
+
+        // User Profile Drawer
+        function openUserProfileModal() {
+            document.getElementById('userProfileModal').classList.remove('hidden');
+        }
+        function closeUserProfileModal() {
+            document.getElementById('userProfileModal').classList.add('hidden');
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
